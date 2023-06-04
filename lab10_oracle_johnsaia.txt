@@ -1,0 +1,168 @@
+SQL> SELECT crime_id, classification, date_charged, hearing_date, (hearing_date - date_charged)
+  2  FROM crimes
+  3  WHERE(hearing_date - date_charged) > 14;
+
+  CRIME_ID C DATE_CHAR HEARING_D (HEARING_DATE-DATE_CHARGED)                    
+---------- - --------- --------- ---------------------------                    
+     10086 M 20-OCT-08 05-DEC-08                          46                    
+     10087 M 30-OCT-08 05-DEC-08                          36                    
+     10089 M 22-OCT-08 25-NOV-08                          34                    
+     10090 M 22-OCT-08 25-NOV-08                          34                    
+     10091 M 24-OCT-08 28-NOV-08                          35                    
+     10092 M 24-OCT-08 28-NOV-08                          35                    
+     10093 M 22-OCT-08 25-NOV-08                          34                    
+     10094 M 26-OCT-08 26-NOV-08                          31                    
+  25344031 M 26-OCT-08 26-NOV-08                          31                    
+
+9 rows selected.
+
+SQL> SELECT last, first, status, SUBSTR(precinct, 2, 1), DECODE(SUBSTR(precinct, 2, 1), 'A', 'Shady Grove', 'B', 'Center City', 'C', 'Bay Landing') AS DESCRIPTION
+  2  FROM officers
+  3  WHERE status = 'A';
+
+LAST            FIRST      S SUBS DESCRIPTION                                   
+--------------- ---------- - ---- -----------                                   
+Shocks          Pam        A C    Bay Landing                                   
+Busey           Gerry      A H                                                  
+Gants           Dale       A B    Center City                                   
+Hart            Leigh      A A    Shady Grove                                   
+
+SQL> SELECT s.criminal_id, UPPER(c.last), UPPER(c.first), s.sentence_id, TO_CHAR(s.start_date, 'MONTH DD, YYYY'), s.end_date, TRUNC(MONTHS_BETWEEN(s.end_date, s.start_date), 0) AS LENGTH
+  2  FROM senetences s JOIN criminals c
+  3  ON s.criminal_id = c.criminal_id;
+FROM senetences s JOIN criminals c
+     *
+ERROR at line 2:
+ORA-00942: table or view does not exist 
+
+
+SQL> SELECT s.criminal_id, UPPER(c.last), UPPER(c.first), s.sentence_id, TO_CHAR(s.start_date, 'MONTH DD, YYYY'), s.end_date, TRUNC(MONTHS_BETWEEN(s.end_date, s.start_date), 0) AS LENGTH
+  2  FROM sentences s JOIN criminals c
+  3  ON s.criminal_id = c.criminal_id;
+
+CRIMINAL_ID UPPER(C.LAST)   UPPER(C.FI SENTENCE_ID                              
+----------- --------------- ---------- -----------                              
+TO_CHAR(S.START_DATE,'MONTHDD,YYYY')          END_DATE      LENGTH              
+--------------------------------------------- --------- ----------              
+       1020 PHELPS          SAM               1000                              
+SEPTEMBER 15, 2008                            15-SEP-10         24              
+                                                                                
+       1021 SUMS            TAMMY             1001                              
+DECEMBER  05, 2008                            05-JUN-09          6              
+                                                                                
+       1022 CAULK           DAVE              1002                              
+MARCH     20, 2009                            20-AUG-09          5              
+                                                                                
+
+CRIMINAL_ID UPPER(C.LAST)   UPPER(C.FI SENTENCE_ID                              
+----------- --------------- ---------- -----------                              
+TO_CHAR(S.START_DATE,'MONTHDD,YYYY')          END_DATE      LENGTH              
+--------------------------------------------- --------- ----------              
+       1025 CAT             TOMMY             1004                              
+DECEMBER  20, 2008                            20-MAR-09          3              
+                                                                                
+       1026 SIMON           TIM               1005                              
+DECEMBER  20, 2008                            20-MAR-09          3              
+                                                                                
+       1027 PINTS           REED              1006                              
+DECEMBER  20, 2008                            20-MAR-09          3              
+                                                                                
+
+CRIMINAL_ID UPPER(C.LAST)   UPPER(C.FI SENTENCE_ID                              
+----------- --------------- ---------- -----------                              
+TO_CHAR(S.START_DATE,'MONTHDD,YYYY')          END_DATE      LENGTH              
+--------------------------------------------- --------- ----------              
+       1028 MANSVILLE       NANCY             1007                              
+DECEMBER  20, 2008                            20-MAR-09          3              
+                                                                                
+       1024 PERRY           CART              1003                              
+DECEMBER  20, 2008                            20-MAR-09          3              
+                                                                                
+       1029 STATIN          PENNY             1008                              
+DECEMBER  20, 2008                            05-FEB-09          1              
+                                                                                
+
+CRIMINAL_ID UPPER(C.LAST)   UPPER(C.FI SENTENCE_ID                              
+----------- --------------- ---------- -----------                              
+TO_CHAR(S.START_DATE,'MONTHDD,YYYY')          END_DATE      LENGTH              
+--------------------------------------------- --------- ----------              
+       1030 PANNER          LEE               1009                              
+DECEMBER  20, 2008                            05-FEB-09          1              
+                                                                                
+       1030 PANNER          LEE               1010                              
+FEBRUARY  06, 2009                            06-JUL-09          5              
+                                                                                
+
+11 rows selected.
+
+SQL> SELECT c.last, c.first, cc.charge_id, TO_CHAR((cc.fine_amount + cc.court_fee), '$99999.99') AS total_amount, TO_CHAR(cc.amount_paid, '$99999.99'), TO_CHAR((cc.fine_amount + cc.court_fee - NVL(cc.amount_paid, 0)), '$99999.99) AS amount_owed, cc.pay_due_date
+  2  FROM crimes cr JOIN crime_charges cc
+  3  ON cr.crime_id = cc.crime_id
+  4  JOIN criminals c
+  5  ON cr.criminal_id = c.criminal_id
+  6  WHERE (cc.fine_amount + cc.court_fee - NVL(cc.amount_paid, 0)) > 0;
+ERROR:
+ORA-01756: quoted string not properly terminated 
+
+
+SQL> SELECT c.last, c.first, cc.charge_id, TO_CHAR((cc.fine_amount + cc.court_fee), '$99999.99') AS total_amount, TO_CHAR(cc.amount_paid, '$99999.99'), TO_CHAR((cc.fine_amount + cc.court_fee - NVL(cc.amount_paid, 0)), '$99999.99') AS amount_owed, cc.pay_due_date
+  2  FROM crimes cr JOIN crime_charges cc
+  3  ON cr.crime_id = cc.crime_id
+  4  JOIN criminals c
+  5  ON cr.criminal_id = c.criminal_id
+  6  WHERE (cc.fine_amount + cc.court_fee - NVL(cc.amount_paid, 0)) > 0;
+
+LAST            FIRST       CHARGE_ID TOTAL_AMOU TO_CHAR(CC AMOUNT_OWE PAY_DUE_D
+--------------- ---------- ---------- ---------- ---------- ---------- ---------
+Phelps          Sam              5000   $3200.00     $40.00   $3160.00 15-OCT-08
+Phelps          Sam              5001   $1100.00              $1100.00 15-OCT-08
+Sums            Tammy            5002    $300.00     $25.00    $275.00 15-FEB-09
+Cat             Tommy            5005    $150.00               $150.00 15-FEB-09
+Simon           Tim              5006    $150.00               $150.00 15-FEB-09
+Pints           Reed             5007    $150.00     $20.00    $130.00 15-FEB-09
+Mansville       Nancy            5008    $150.00     $25.00    $125.00 15-FEB-09
+Perry           Cart             5009    $150.00               $150.00 15-FEB-09
+Statin          Penny            5010    $100.00               $100.00 17-FEB-09
+Panner          Lee              5011    $100.00               $100.00 17-FEB-09
+
+10 rows selected.
+
+SQL> SELECT c.last, c.first, s.start_date, ADD_MONTHS(s.start_date, 2) AS review_date
+  2  FROM sentences s JOIN criminals c
+  3  ON s.criminal_id = c.criminal_id
+  4  WHERE MONTHS_BETWEEN(s.end_date, s.start_date) > 2;
+
+LAST            FIRST      START_DAT REVIEW_DA                                  
+--------------- ---------- --------- ---------                                  
+Phelps          Sam        15-SEP-08 15-NOV-08                                  
+Sums            Tammy      05-DEC-08 05-FEB-09                                  
+Caulk           Dave       20-MAR-09 20-MAY-09                                  
+Cat             Tommy      20-DEC-08 20-FEB-09                                  
+Simon           Tim        20-DEC-08 20-FEB-09                                  
+Pints           Reed       20-DEC-08 20-FEB-09                                  
+Mansville       Nancy      20-DEC-08 20-FEB-09                                  
+Perry           Cart       20-DEC-08 20-FEB-09                                  
+Panner          Lee        06-FEB-09 06-APR-09                                  
+
+9 rows selected.
+
+SQL> INSERT INTO appeals(appeal_id, crime_id, filing_date, hearing_date, status)
+  2  VALUES(appeals_id_seq.NEXTVAL, '&crime_id', TO_DATE('&filing_date', 'MM DD YYYY'), TO_DATE('&hearing_date', 'MM DD YYYY'), DEFAULT);
+Enter value for crime_id: 25344031
+Enter value for filing_date: 02 13 2009
+Enter value for hearing_date: 02 27 2009
+old   2: VALUES(appeals_id_seq.NEXTVAL, '&crime_id', TO_DATE('&filing_date', 'MM DD YYYY'), TO_DATE('&hearing_date', 'MM DD YYYY'), DEFAULT)
+new   2: VALUES(appeals_id_seq.NEXTVAL, '25344031', TO_DATE('02 13 2009', 'MM DD YYYY'), TO_DATE('02 27 2009', 'MM DD YYYY'), DEFAULT)
+
+1 row created.
+
+SQL> SELECT * FROM appeals;
+
+ APPEAL_ID   CRIME_ID FILING_DA HEARING_D S                                     
+---------- ---------- --------- --------- -                                     
+      7500      10087 10-DEC-08 20-DEC-08 A                                     
+      7501      10086 15-DEC-08 20-DEC-08 A                                     
+      7502      10085 20-SEP-08 28-OCT-08 A                                     
+      7508   25344031 13-FEB-09 27-FEB-09 P                                     
+
+SQL> spool off;

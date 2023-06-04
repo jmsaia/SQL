@@ -1,0 +1,249 @@
+SQL> ;
+SQL> SELECT cr.criminal_id, c.last, c.first, cc.crime_code, cc.fine_amount
+  2  FROM criminals c, crime_charges cc, crimes cr
+  3  WHERE cr.criminal_id = c.criminal_id(+)
+  4  AND cr.crime_id(+) = cc.crime_id;
+
+CRIMINAL_ID LAST            FIRST      CRIME_CODE FINE_AMOUNT                   
+----------- --------------- ---------- ---------- -----------                   
+       1020 Phelps          Sam               301        3000                   
+       1020 Phelps          Sam               305        1000                   
+       1021 Sums            Tammy             304         200                   
+       1022 Caulk           Dave              305         100                   
+       1023 Dabber          Pat               306                               
+       1025 Cat             Tommy             305         100                   
+       1026 Simon           Tim               305         100                   
+       1027 Pints           Reed              305         100                   
+       1028 Mansville       Nancy             305         100                   
+       1024 Perry           Cart              305         100                   
+       1029 Statin          Penny             305          50                   
+
+CRIMINAL_ID LAST            FIRST      CRIME_CODE FINE_AMOUNT                   
+----------- --------------- ---------- ---------- -----------                   
+       1030 Panner          Lee               305          50                   
+       1030 Panner          Lee               305          50                   
+
+13 rows selected.
+
+SQL> SELECT cr.criminal_id, c.last, c.first, cc.crime_code, cc.fine_amount
+  2  FROM crimes cr LEFT OUTER JOIN crime_charges cc
+  3  ON cr.crime_id = cc.crime_id
+  4  RIGHT OUTER JOIN criminals c
+  5  ON cr.criminal_id = c.criminal_id;
+
+CRIMINAL_ID LAST            FIRST      CRIME_CODE FINE_AMOUNT                   
+----------- --------------- ---------- ---------- -----------                   
+       1020 Phelps          Sam               301        3000                   
+       1020 Phelps          Sam               305        1000                   
+       1021 Sums            Tammy             304         200                   
+       1022 Caulk           Dave              305         100                   
+       1023 Dabber          Pat               306                               
+       1025 Cat             Tommy             305         100                   
+       1026 Simon           Tim               305         100                   
+       1027 Pints           Reed              305         100                   
+       1028 Mansville       Nancy             305         100                   
+       1024 Perry           Cart              305         100                   
+       1029 Statin          Penny             305          50                   
+
+CRIMINAL_ID LAST            FIRST      CRIME_CODE FINE_AMOUNT                   
+----------- --------------- ---------- ---------- -----------                   
+       1030 Panner          Lee               305          50                   
+       1030 Panner          Lee               305          50                   
+
+13 rows selected.
+
+SQL> SELECT cr.criminal_id, c.last, c.first, cr.classification, cr.date_charged, a.filing_date, a.status
+  2  FROM crimes cr, criminals c, appeals a
+  3  WHERE cr.criminal_id = c.criminal_id(+)
+  4  AND cr.crime_id = a.appeal_id(+);
+
+CRIMINAL_ID LAST            FIRST      C DATE_CHAR FILING_DA S                  
+----------- --------------- ---------- - --------- --------- -                  
+       1020 Phelps          Sam        F 03-SEP-08                              
+       1021 Sums            Tammy      M 20-OCT-08                              
+       1022 Caulk           Dave       M 30-OCT-08                              
+       1023 Dabber          Pat        O 05-NOV-08                              
+       1025 Cat             Tommy      M 22-OCT-08                              
+       1026 Simon           Tim        M 22-OCT-08                              
+       1027 Pints           Reed       M 24-OCT-08                              
+       1028 Mansville       Nancy      M 24-OCT-08                              
+       1024 Perry           Cart       M 22-OCT-08                              
+       1029 Statin          Penny      M 26-OCT-08                              
+       1030 Panner          Lee        M 26-OCT-08                              
+
+CRIMINAL_ID LAST            FIRST      C DATE_CHAR FILING_DA S                  
+----------- --------------- ---------- - --------- --------- -                  
+       1030 Panner          Lee        M 18-NOV-08                              
+
+12 rows selected.
+
+SQL> SELECT cr.criminal_id, c.last, c.first, cr.classification, cr.date_charged, a.filing_date, a.status
+  2  FROM crimes cr RIGHT OUTER JOIN criminals c
+  3  ON cr.criminal_id = c.criminal_id
+  4  LEFT OUTER JOIN appeals a
+  5  ON cr.crime_id = a.appeal_id;
+
+CRIMINAL_ID LAST            FIRST      C DATE_CHAR FILING_DA S                  
+----------- --------------- ---------- - --------- --------- -                  
+       1020 Phelps          Sam        F 03-SEP-08                              
+       1021 Sums            Tammy      M 20-OCT-08                              
+       1022 Caulk           Dave       M 30-OCT-08                              
+       1023 Dabber          Pat        O 05-NOV-08                              
+       1025 Cat             Tommy      M 22-OCT-08                              
+       1026 Simon           Tim        M 22-OCT-08                              
+       1027 Pints           Reed       M 24-OCT-08                              
+       1028 Mansville       Nancy      M 24-OCT-08                              
+       1024 Perry           Cart       M 22-OCT-08                              
+       1029 Statin          Penny      M 26-OCT-08                              
+       1030 Panner          Lee        M 26-OCT-08                              
+
+CRIMINAL_ID LAST            FIRST      C DATE_CHAR FILING_DA S                  
+----------- --------------- ---------- - --------- --------- -                  
+       1030 Panner          Lee        M 18-NOV-08                              
+
+12 rows selected.
+
+SQL> SELECT cr.criminal_id, c.last, c.first, cr.classification, cr.date_charged, cc.crime_code, cc.fine_amount
+  2  FROM crimes cr, criminals c, crime_charges cc
+  3  WHERE cr.criminal_id = c.criminal_id(+)
+  4  AND cr.crime_id = cc.crime_id
+  5  AND cr.classification = 'O'
+  6  ORDER BY cr.criminal_id, cr.date_charged;
+
+CRIMINAL_ID LAST            FIRST      C DATE_CHAR CRIME_CODE FINE_AMOUNT       
+----------- --------------- ---------- - --------- ---------- -----------       
+       1023 Dabber          Pat        O 05-NOV-08        306                   
+
+SQL> SELECT cr.criminal_id, c.last, c.first, cr.classification, cr.date_charged, cc.crime_code, cc.fine_amount
+  2  FROM crimes cr RIGHT OUTER JOIN criminals c
+  3  ON cr.criminal_id = c.criminal_id
+  4  JOIN crime_charges cc
+  5  ON cr.crime_id = cc.crime_id
+  6  WHERE cr.classification = 'O'
+  7  ORDER BY cr.criminal_id, cr.date_charged;
+
+CRIMINAL_ID LAST            FIRST      C DATE_CHAR CRIME_CODE FINE_AMOUNT       
+----------- --------------- ---------- - --------- ---------- -----------       
+       1023 Dabber          Pat        O 05-NOV-08        306                   
+
+SQL> SELECT c.criminal_id, c.last, c.first, c.v_status, c.p_status, a.alias
+  2  FROM criminals c, aliases a
+  3  WHERE c.criminal_id = a.criminal_id(+)
+  4  ORDER BY c.last, c.first;
+
+CRIMINAL_ID LAST            FIRST      V P ALIAS                                
+----------- --------------- ---------- - - --------------------                 
+       1025 Cat             Tommy      N Y                                      
+       1022 Caulk           Dave       N Y Cabby                                
+       1023 Dabber          Pat        N N                                      
+       1028 Mansville       Nancy      N Y                                      
+       1030 Panner          Lee        N Y                                      
+       1024 Perry           Cart       N Y                                      
+       1020 Phelps          Sam        Y N Bat                                  
+       1027 Pints           Reed       N Y                                      
+       1026 Simon           Tim        N Y                                      
+       1029 Statin          Penny      N Y                                      
+       1021 Sums            Tammy      N Y                                      
+
+11 rows selected.
+
+SQL> SELECT c.criminal_id, c.last, c.first, c.v_status, c.p_status, a.alias
+  2  FROM criminals c LEFT OUTER JOIN aliases a
+  3  ON c.criminal_id = a.criminal_id
+  4  ORDER BY c.last, c.first;
+
+CRIMINAL_ID LAST            FIRST      V P ALIAS                                
+----------- --------------- ---------- - - --------------------                 
+       1025 Cat             Tommy      N Y                                      
+       1022 Caulk           Dave       N Y Cabby                                
+       1023 Dabber          Pat        N N                                      
+       1028 Mansville       Nancy      N Y                                      
+       1030 Panner          Lee        N Y                                      
+       1024 Perry           Cart       N Y                                      
+       1020 Phelps          Sam        Y N Bat                                  
+       1027 Pints           Reed       N Y                                      
+       1026 Simon           Tim        N Y                                      
+       1029 Statin          Penny      N Y                                      
+       1021 Sums            Tammy      N Y                                      
+
+11 rows selected.
+
+SQL> SELECT c.last, c.first, s.start_date, s.end_date, pc.con_freq
+  2  FROM criminals c, sentences s, prob_contact pc
+  3  WHERE s.criminal_id = c.criminal_id
+  4  AND s.end_date - s.start_date BETWEEN pc.low_amt AND pc.high_amt
+  5  ORDER by s.start_date, c.last, c.first;
+
+LAST            FIRST      START_DAT END_DATE  CON_FREQ                         
+--------------- ---------- --------- --------- --------------------             
+Sums            Tammy      05-DEC-08 05-JUN-09 Monthly                          
+Cat             Tommy      20-DEC-08 20-MAR-09 Every 2 weeks                    
+Mansville       Nancy      20-DEC-08 20-MAR-09 Every 2 weeks                    
+Panner          Lee        20-DEC-08 05-FEB-09 Weekly                           
+Perry           Cart       20-DEC-08 20-MAR-09 Every 2 weeks                    
+Pints           Reed       20-DEC-08 20-MAR-09 Every 2 weeks                    
+Simon           Tim        20-DEC-08 20-MAR-09 Every 2 weeks                    
+Statin          Penny      20-DEC-08 05-FEB-09 Weekly                           
+Panner          Lee        06-FEB-09 06-JUL-09 Every 2 weeks                    
+Caulk           Dave       20-MAR-09 20-AUG-09 Every 2 weeks                    
+
+10 rows selected.
+
+SQL> SELECT c.last, c.first, s.start_date, s.end_date, pc.con_freq
+  2  FROM prob_contact pc, sentences s JOIN criminals c
+  3  ON s.criminal_id = c.criminal_id
+  4  WHERE s.end_date - s.start_date BETWEEN pc.low_amt AND pc.high_amt
+  5  ORDER by s.start_date, c.last, c.first;
+
+LAST            FIRST      START_DAT END_DATE  CON_FREQ                         
+--------------- ---------- --------- --------- --------------------             
+Sums            Tammy      05-DEC-08 05-JUN-09 Monthly                          
+Cat             Tommy      20-DEC-08 20-MAR-09 Every 2 weeks                    
+Mansville       Nancy      20-DEC-08 20-MAR-09 Every 2 weeks                    
+Panner          Lee        20-DEC-08 05-FEB-09 Weekly                           
+Perry           Cart       20-DEC-08 20-MAR-09 Every 2 weeks                    
+Pints           Reed       20-DEC-08 20-MAR-09 Every 2 weeks                    
+Simon           Tim        20-DEC-08 20-MAR-09 Every 2 weeks                    
+Statin          Penny      20-DEC-08 05-FEB-09 Weekly                           
+Panner          Lee        06-FEB-09 06-JUL-09 Every 2 weeks                    
+Caulk           Dave       20-MAR-09 20-AUG-09 Every 2 weeks                    
+
+10 rows selected.
+
+SQL> SELECT pb1.last, pb1.first, pb2.mgr_id
+  2  FROM prob_officers pb1, prob_officers pb2
+  3  WHERE pb1.prob_id  = pb2.mgr_id(+)
+  4  ORDER BY last, first;
+
+LAST            FIRST          MGR_ID                                           
+--------------- ---------- ----------                                           
+Boyle           Chris                                                           
+Hawk            Fred                                                            
+Peek            Susan             100                                           
+Peek            Susan             100                                           
+Ponds           Terry                                                           
+Speckle         Jeff                                                            
+Taps            George            106                                           
+Taps            George            106                                           
+
+8 rows selected.
+
+SQL> SELECT pb1.last, pb1.first, pb2.mgr_id
+  2  FROM prob_officers pb1 LEFT OUTER JOIN prob_officers pb2
+  3  ON pb1.prob_id  = pb2.mgr_id
+  4  ORDER BY last, first;
+
+LAST            FIRST          MGR_ID                                           
+--------------- ---------- ----------                                           
+Boyle           Chris                                                           
+Hawk            Fred                                                            
+Peek            Susan             100                                           
+Peek            Susan             100                                           
+Ponds           Terry                                                           
+Speckle         Jeff                                                            
+Taps            George            106                                           
+Taps            George            106                                           
+
+8 rows selected.
+
+SQL> spool off;
