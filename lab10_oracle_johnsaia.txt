@@ -87,15 +87,6 @@ FEBRUARY  06, 2009                            06-JUL-09          5
 
 11 rows selected.
 
-SQL> SELECT c.last, c.first, cc.charge_id, TO_CHAR((cc.fine_amount + cc.court_fee), '$99999.99') AS total_amount, TO_CHAR(cc.amount_paid, '$99999.99'), TO_CHAR((cc.fine_amount + cc.court_fee - NVL(cc.amount_paid, 0)), '$99999.99) AS amount_owed, cc.pay_due_date
-  2  FROM crimes cr JOIN crime_charges cc
-  3  ON cr.crime_id = cc.crime_id
-  4  JOIN criminals c
-  5  ON cr.criminal_id = c.criminal_id
-  6  WHERE (cc.fine_amount + cc.court_fee - NVL(cc.amount_paid, 0)) > 0;
-ERROR:
-ORA-01756: quoted string not properly terminated 
-
 
 SQL> SELECT c.last, c.first, cc.charge_id, TO_CHAR((cc.fine_amount + cc.court_fee), '$99999.99') AS total_amount, TO_CHAR(cc.amount_paid, '$99999.99'), TO_CHAR((cc.fine_amount + cc.court_fee - NVL(cc.amount_paid, 0)), '$99999.99') AS amount_owed, cc.pay_due_date
   2  FROM crimes cr JOIN crime_charges cc
