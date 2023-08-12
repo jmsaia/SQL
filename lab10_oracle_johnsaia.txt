@@ -27,14 +27,6 @@ Busey           Gerry      A H
 Gants           Dale       A B    Center City                                   
 Hart            Leigh      A A    Shady Grove                                   
 
-SQL> SELECT s.criminal_id, UPPER(c.last), UPPER(c.first), s.sentence_id, TO_CHAR(s.start_date, 'MONTH DD, YYYY'), s.end_date, TRUNC(MONTHS_BETWEEN(s.end_date, s.start_date), 0) AS LENGTH
-  2  FROM senetences s JOIN criminals c
-  3  ON s.criminal_id = c.criminal_id;
-FROM senetences s JOIN criminals c
-     *
-ERROR at line 2:
-ORA-00942: table or view does not exist 
-
 
 SQL> SELECT s.criminal_id, UPPER(c.last), UPPER(c.first), s.sentence_id, TO_CHAR(s.start_date, 'MONTH DD, YYYY'), s.end_date, TRUNC(MONTHS_BETWEEN(s.end_date, s.start_date), 0) AS LENGTH
   2  FROM sentences s JOIN criminals c
